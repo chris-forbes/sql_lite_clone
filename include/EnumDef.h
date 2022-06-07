@@ -7,6 +7,8 @@ typedef enum {	PREPARE_SUCCESS, PREPARE_UNRECOGNIZED_STATEMENT, PREPARE_SYNTAX_E
 typedef enum {	STATEMENT_INSERT, STATEMENT_SELECT} StatementType;
 
 typedef enum {EXEC_SUCCESS, EXEC_TABLE_FULL, EXEC_FAIL} ExecResult;
+
+typedef enum {NODE_INTERNAL, NODE_LEAF} NodeType;
 #endif
 
 
