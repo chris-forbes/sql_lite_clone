@@ -3,14 +3,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include <errno.h>
-#include <fcntl.h>
 #include <unistd.h>
 #include "Row.h"
 #include "EnumDef.h"
 #include "InputBuffer.h"
 #include "DataCommon.h"
 #include "Pager.h"
+#include "Statement.h"
+#include "Table.h"
+#include "Cursor.h"
 
 const u32 ID_SIZE = sizeof_attr(Row, id);
 const u32 USERNAME_SIZE = sizeof_attr(Row, username);
@@ -23,22 +24,7 @@ const u32 PAGE_SIZE = 4096;
 const u32 ROWS_PER_PAGE = PAGE_SIZE / ROW_SIZE;
 const u32 TABLE_MAX_ROWS = ROWS_PER_PAGE;
 
-typedef struct {
-	StatementType type;
-	Row row_to_insert;
-}Statement;
 
-
-typedef struct {
-  u32 num_rows;
-  Pager* pager;
-}Table;
-
-typedef struct {
-  Table* table;
-  u32 row_num;
-  bool end_of_table; // indicates 1 past the last element
-} Cursor;
 
 void print_row(Row* row){
 	printf("(%d, %s, %s)\n", row->id, row->username, row->email);
@@ -54,38 +40,6 @@ void deserialize_row(void *source, Row* destination) {
 	memcpy(&(destination->id), source + ID_OFFSET, ID_SIZE);
 	memcpy(&(destination->username), source + USERNAME_OFFSET, USERNAME_SIZE);
 	memcpy(&(destination->email), source + EMAIL_OFFSET, EMAIL_SIZE);
-}
-
-Cursor* table_start(Table* table) {
-  Cursor* cursor = (Cursor*)malloc(sizeof(Cursor));
-  cursor -> table = table;
-  cursor -> row_num = 0;
-  cursor -> end_of_table = (table->num_rows == 0);
-  return cursor;
-}
-
-Cursor* table_end(Table* table) {
-  Cursor* cursor = (Cursor*)malloc(sizeof(Cursor));
-  cursor -> table = table;
-  cursor -> row_num = table -> num_rows;
-  cursor -> end_of_table = true;
-  return cursor;
-}
-
-void cursor_advance(Cursor* cursor) {
-  cursor -> row_num += 1;
-  if(cursor -> row_num >= cursor -> table -> num_rows) {
-    cursor -> end_of_table = true;
-  }
-}
-
-void* cursor_value(Cursor* cursor) {
-  u32 row_num = cursor -> row_num;
-  u32 page_num = row_num / ROWS_PER_PAGE;
-  void* page = get_page(cursor->table->pager, page_num);
-  u32 row_offset = row_num % ROWS_PER_PAGE;
-  u32 byte_offset = row_offset * ROW_SIZE;
-  return page + byte_offset;
 }
 
 void db_close(Table* table) {

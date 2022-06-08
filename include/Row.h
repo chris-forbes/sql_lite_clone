@@ -2,7 +2,7 @@
 #define ROW_H
 #define COLUMN_USERNAME_SIZE 32
 #define COLUMN_EMAIL_SIZE 255
-
+#include <stdint.h>
 
 typedef struct {
 	uint32_t id;
