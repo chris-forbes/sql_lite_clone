@@ -12,6 +12,12 @@
 #include "Statement.h"
 #include "Table.h"
 #include "Cursor.h"
+#include "NodeCommon.h"
+#include "LeafBody.h"
+#include "LeafNode.h"
+
+#define u32 uint32_t
+#define u8 uint8_t
 
 const u32 ID_SIZE = sizeof_attr(Row, id);
 const u32 USERNAME_SIZE = sizeof_attr(Row, username);
@@ -23,6 +29,24 @@ const u32 ROW_SIZE = ID_SIZE + USERNAME_SIZE + EMAIL_SIZE;
 const u32 PAGE_SIZE = 4096;
 const u32 ROWS_PER_PAGE = PAGE_SIZE / ROW_SIZE;
 const u32 TABLE_MAX_ROWS = ROWS_PER_PAGE;
+const u32 NODE_TYPE_SIZE = sizeof(uint8_t);
+const u32 NODE_TYPE_OFFSET = 0;
+const u32 IS_ROOT_SIZE = sizeof(uint8_t);
+const u32 IS_ROOT_OFFSET = NODE_TYPE_SIZE;
+const u32 PARENT_POINTER_SIZE = sizeof(u32);
+const u32 PARENT_POINTER_OFFSET = IS_ROOT_OFFSET + IS_ROOT_SIZE;
+const u8 COMMON_NODE_HEADER_SIZE = NODE_TYPE_SIZE + IS_ROOT_SIZE + PARENT_POINTER_SIZE;
+const u32 LEAF_NODE_KEY_SIZE = sizeof(u32);
+const u32 LEAF_NODE_KEY_OFFSET = 0;
+const u32 LEAF_NODE_VALUE_SIZE = ROW_SIZE;
+const u32 LEAF_NODE_VALUE_OFFSET = LEAF_NODE_KEY_OFFSET + LEAF_NODE_KEY_SIZE;
+const u32 LEAF_NODE_CELL_SIZE = LEAF_NODE_KEY_SIZE + LEAF_NODE_VALUE_SIZE;
+const u32 LEAF_NODE_NUM_CELLS_SIZE = sizeof(u32);
+const u32 LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE;
+const u32 LEAF_NODE_SPACE_FOR_CELLS = PAGE_SIZE - LEAF_NODE_HEADER_SIZE;
+const u32 LEAF_NODE_NUM_CELLS_OFFSET = COMMON_NODE_HEADER_SIZE;
+const u32 LEAF_NODE_MAX_CELLS = LEAF_NODE_SPACE_FOR_CELLS / LEAF_NODE_CELL_SIZE;
+
 
 
 
