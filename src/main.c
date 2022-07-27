@@ -126,7 +126,19 @@ InputBuffer* new_input_buffer() {
 
 void print_prompt() {printf("db > ");}
 
+void print_logo() {
+printf("    #                                            ######  ######  \n");
+printf("   # #   #      #    # ###### # #####    ##      #     # #     # \n");
+printf("  #   #  #      ##  ## #      # #    #  #  #     #     # #     # \n");
+printf(" #     # #      # ## # #####  # #    # #    #    #     # ######  \n");
+printf(" ####### #      #    # #      # #    # ######    #     # #     # \n");
+printf(" #     # #      #    # #      # #    # #    #    #     # #     # \n");
+printf(" #     # ###### #    # ###### # #####  #    #    ######  ######  \n");
+printf("                                                                 \n");  
+}
+
 void print_help() {
+  print_logo();
   printf("Meta Commands Menu\n");
   printf("===============================================\n");
   printf(".help\t\tShow this menu.\n");
